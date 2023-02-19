@@ -7,4 +7,7 @@
   * [X] muscles
 
 ##### Refactor
-* [ ] exercise add
+* [X] exercise add
+
+#### Fix
+* [ ] cant delete muscle while it exists in exercise

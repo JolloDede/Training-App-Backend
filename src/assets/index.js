@@ -46,7 +46,7 @@ router.post("/exercises", (req, res, next) => {
             next(error);
             return;
         }
-        if (!musclesExist(req.body.params.muscles)) {
+        if (!musclesExist(req.body.params.muscles.map(muscleUsage => muscleUsage.muscle._id))) {
             const error = new Error("A muscle does not exist");
             res.status(404);
             next(error);
