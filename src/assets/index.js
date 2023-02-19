@@ -44,22 +44,36 @@ router.post("/exercises", (req, res, next) => {
             const error = new Error("That exercise is already exists.");
             res.status(403);
             next(error);
-        } else {
-            if (!musclesExist(req.body.params.muscles)) {
-                const error = new Error("A muscle does not exist");
-                res.status(404);
-                next(error);
-                return;
-            }
-            const newExercise = {
-                name: req.body.params.name,
-                musclesUsage: { muscleId: req.body.params.muscles.map(({ _id }) => _id), percent: req.body.params.muscles.percent },
-            };
-            exercises.insert(newExercise)
-                .then(insertedExercise => {
-                    res.send(insertedExercise);
-                })
+            return;
         }
+        if (!musclesExist(req.body.params.muscles)) {
+            const error = new Error("A muscle does not exist");
+            res.status(404);
+            next(error);
+            return;
+        }
+        const newExercise = {
+            name: req.body.params.name,
+            muscles: req.body.params.muscles.map(muscleUsage => ({ muscle: { _id: muscleUsage.muscle._id, name: muscleUsage.muscle.name}, percent: muscleUsage.percent })),
+        };
+        exercises.insert(newExercise)
+            .then(insertedExercise => {
+                res.send(insertedExercise);
+            })
+    })
+});
+
+router.delete("/exercises/:id", (req, res, next) => {
+    exercises.findOneAndDelete({
+        _id: req.params.id,
+    }).then((exercise) => {
+        if (!exercise) {
+            const error = new Error("Can not delete a exercise that does not exist!");
+            res.status(404);
+            next(error);
+            return;
+        }
+        res.send(exercise)
     })
 });
 
@@ -79,15 +93,30 @@ router.post("/muscles", (req, res, next) => {
             const error = new Error("That muscle is already exists. Please try anotherone.");
             res.status(403);
             next(error);
-        } else {
-            const newMuscle = {
-                name: req.body.params.name
-            };
-            muscles.insert(newMuscle)
-                .then(insertedMuscle => {
-                    res.send(insertedMuscle);
-                })
+            return;
         }
+        const newMuscle = {
+            name: req.body.params.name
+        };
+        muscles.insert(newMuscle)
+            .then(insertedMuscle => {
+                res.send(insertedMuscle);
+            })
+    })
+});
+
+router.delete("/muscles/:id", (req, res, next) => {
+    muscles.findOneAndDelete({
+        _id: req.params.id,
+    }).then((muscle) => {
+        console.log(muscle)
+        if (!muscle) {
+            const error = new Error("Can not delete a muscle that does not exist!");
+            res.status(404);
+            next(error);
+            return;
+        }
+        res.send(muscle)
     })
 });
 

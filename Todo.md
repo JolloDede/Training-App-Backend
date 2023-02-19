@@ -2,6 +2,9 @@
 
 
 #### Step 6
-* [ ] remove
-  * [ ] exercises
-  * [ ] muscles
+* [X] remove
+  * [X] exercises
+  * [X] muscles
+
+##### Refactor
+* [ ] exercise add
