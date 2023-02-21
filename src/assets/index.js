@@ -128,22 +128,4 @@ router.get("/user/exercises", (req, res, next) => {
         })
 });
 
-router.post("/user/exercises", (req, res, next) => {
-    if (!exercisesExists([req.body.params.exerciseId])) {
-        const error = new Error("An exercise does not exist");
-        res.status(404);
-        next(error);
-        return;
-    }
-    const newUserExercise = {
-        exerciseId: req.body.params.exerciseId,
-        userId: req.user._id,
-        repetitions: req.body.params.repetitions,
-    };
-    userExercises.insert(newUserExercise)
-        .then(insertedExercise => {
-            res.send(insertedExercise);
-        })
-});
-
 module.exports = router;

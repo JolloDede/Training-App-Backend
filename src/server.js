@@ -34,6 +34,39 @@ app.get("/teams/:id", (req, res) => {
   })
 });
 
+router.post("/user/exercises", (req, res, next) => {
+  if (!exercisesExists([req.body.params.exerciseId])) {
+      const error = new Error("An exercise does not exist");
+      res.status(404);
+      next(error);
+      return;
+  }
+  const newUserExercise = {
+      exerciseId: req.body.params.exerciseId,
+      userId: req.user._id,
+      repetitions: req.body.params.repetitions,
+  };
+  userExercises.insert(newUserExercise)
+      .then(insertedExercise => {
+          res.send(insertedExercise);
+      })
+});
+
+router.delete("/user/exercises/:id", (req, res, next) => {
+  userExercises.findOneAndDelete({
+      _id: req.params.id,
+  }).then((exercise) => {
+      if (!exercise) {
+          const error = new Error("Can not delete a exercise that does not exist!");
+          res.status(404);
+          next(error);
+          return;
+      }
+      res.send(exercise);
+  })
+});
+
+// admin space
 app.use(middlewares.isAdmin);
 
 app.use("/assets", assets);
