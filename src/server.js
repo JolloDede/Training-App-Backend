@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require("cors");
 const morgan = require("morgan");
+const monk = require("monk");
 
 const db = require("./db/connection");
 const auth = require('./auth');
@@ -9,7 +10,8 @@ const middlewares = require("./auth/middleware");
 const assets = require("./assets");
 
 const app = express();
-const users = db.get("users")
+const users = db.get("users");
+const userExercises = db.get("userExercises");
 app.use(morgan('tiny'));
 
 const allowedOrigins = ['http://127.0.0.1:5173']; const options = { allowedOrigins };
@@ -34,42 +36,28 @@ app.get("/teams/:id", (req, res) => {
   })
 });
 
-router.post("/user/exercises", (req, res, next) => {
-  if (!exercisesExists([req.body.params.exerciseId])) {
-      const error = new Error("An exercise does not exist");
-      res.status(404);
-      next(error);
-      return;
-  }
-  const newUserExercise = {
-      exerciseId: req.body.params.exerciseId,
-      userId: req.user._id,
-      repetitions: req.body.params.repetitions,
-  };
-  userExercises.insert(newUserExercise)
-      .then(insertedExercise => {
-          res.send(insertedExercise);
-      })
-});
-
-router.delete("/user/exercises/:id", (req, res, next) => {
-  userExercises.findOneAndDelete({
-      _id: req.params.id,
-  }).then((exercise) => {
-      if (!exercise) {
-          const error = new Error("Can not delete a exercise that does not exist!");
-          res.status(404);
-          next(error);
-          return;
-      }
-      res.send(exercise);
-  })
-});
+app.use("/assets", assets);
 
 // admin space
 app.use(middlewares.isAdmin);
 
-app.use("/assets", assets);
+app.get("/user/:id", async (req, res, next) => {
+  let user = await users.findOne({
+    _id: req.params.id,
+  }, "username").then(fUser => {
+    return fUser;
+  });
+  let exercises = await userExercises.find({
+    userId: monk.id(req.params.id),
+  }).then(fUserExer => {
+    return fUserExer;
+  })
+  const response = {
+    user: user,
+    exercises: exercises,
+  };
+  res.send(response);
+});
 
 // Error handling
 app.use((error, req, res, next) => {

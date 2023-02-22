@@ -1,9 +1,12 @@
 const express = require("express");
+const monk = require("monk");
+
 const db = require("../db/connection");
+const middlewares = require("../auth/middleware");
 
 const router = express.Router();
 const userExercises = db.get("userExercises");
-const exercises = db.get("exercises")
+const exercises = db.get("exercises");
 const muscles = db.get("muscles");
 
 async function musclesExist(muscleIds) {
@@ -28,7 +31,47 @@ async function exercisesExists(exerciseIds) {
     return true;
 }
 
-// Exercises
+// User exercises
+router.get("/user/exercises", (req, res, next) => {
+    userExercises.find()
+        .then(fExercises => {
+            res.send(fExercises);
+        })
+});
+
+router.post("/user/exercises", (req, res, next) => {
+    if (!exercisesExists([req.body.params.exerciseId])) {
+        const error = new Error("An exercise does not exist");
+        res.status(404);
+        next(error);
+        return;
+    }
+    const newUserExercise = {
+        exerciseId: monk.id(req.body.params.exerciseId),
+        userId: monk.id(req.body.params.userId || req.user._id),
+        repetitions: req.body.params.repetitions,
+    };
+    userExercises.insert(newUserExercise)
+        .then(insertedExercise => {
+            res.send(insertedExercise);
+        })
+});
+
+router.delete("/user/exercises/:id", (req, res, next) => {
+    userExercises.findOneAndDelete({
+        _id: req.params.id,
+    }).then((exercise) => {
+        if (!exercise) {
+            const error = new Error("Can not delete a exercise that does not exist!");
+            res.status(404);
+            next(error);
+            return;
+        }
+        res.send(exercise);
+    })
+});
+
+// get not admin
 router.get("/exercises", (req, res, next) => {
     exercises.find()
         .then(fExercises => {
@@ -36,6 +79,17 @@ router.get("/exercises", (req, res, next) => {
         })
 });
 
+router.get("/muscles", (req, res, next) => {
+    muscles.find()
+        .then(fMuscles => {
+            res.send(fMuscles);
+        })
+});
+
+// admin part
+router.use(middlewares.isAdmin);
+
+// Exercises
 router.post("/exercises", (req, res, next) => {
     exercises.findOne({
         name: req.body.params.name,
@@ -54,7 +108,7 @@ router.post("/exercises", (req, res, next) => {
         }
         const newExercise = {
             name: req.body.params.name,
-            muscles: req.body.params.muscles.map(muscleUsage => ({ muscle: { _id: muscleUsage.muscle._id, name: muscleUsage.muscle.name}, percent: muscleUsage.percent })),
+            muscles: req.body.params.muscles.map(muscleUsage => ({ muscle: { _id: muscleUsage.muscle._id, name: muscleUsage.muscle.name }, percent: muscleUsage.percent })),
         };
         exercises.insert(newExercise)
             .then(insertedExercise => {
@@ -78,13 +132,6 @@ router.delete("/exercises/:id", (req, res, next) => {
 });
 
 // Muscles
-router.get("/muscles", (req, res, next) => {
-    muscles.find()
-        .then(fMuscles => {
-            res.send(fMuscles);
-        })
-});
-
 router.post("/muscles", (req, res, next) => {
     muscles.findOne({
         name: req.body.params.name,
@@ -118,14 +165,6 @@ router.delete("/muscles/:id", (req, res, next) => {
         }
         res.send(muscle)
     })
-});
-
-// User exercises
-router.get("/user/exercises", (req, res, next) => {
-    userExercises.find()
-        .then(fExercises => {
-            res.send(fExercises);
-        })
 });
 
 module.exports = router;
