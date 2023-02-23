@@ -118,16 +118,26 @@ router.post("/exercises", (req, res, next) => {
 });
 
 router.delete("/exercises/:id", (req, res, next) => {
-    exercises.findOneAndDelete({
-        _id: req.params.id,
-    }).then((exercise) => {
-        if (!exercise) {
-            const error = new Error("Can not delete a exercise that does not exist!");
-            res.status(404);
+    userExercises.find({
+        exerciseId: monk.id(req.params.id),
+    }).then(userExercise => {
+        if (userExercise) {
+            const error = new Error("Can not delete a exercise that exists in userexercise!");
+            res.status(403);
             next(error);
             return;
         }
-        res.send(exercise)
+        exercises.findOneAndDelete({
+            _id: req.params.id,
+        }).then((exercise) => {
+            if (!exercise) {
+                const error = new Error("Can not delete a exercise that does not exist!");
+                res.status(404);
+                next(error);
+                return;
+            }
+            res.send(exercise)
+        })
     })
 });
 

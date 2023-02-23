@@ -11,4 +11,4 @@
 
 #### Fix
 * [X] cant delete muscle while it exists in exercise
-* [ ] cant delete exercise while exists in user exercise
+* [X] cant delete exercise while exists in user exercise
