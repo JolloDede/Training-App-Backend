@@ -21,10 +21,14 @@ app.use(middlewares.checkTokenSetUser);
 
 app.use("/auth", auth);
 
+app.get('/', (req, res) => {
+  res.send('Application works!');
+});
+
 app.use(middlewares.isLoggedIn);
 
 app.get('/', (req, res) => {
-  res.send('Application works!');
+  res.send('Authorized!');
 });
 
 app.get("/teams/:id", (req, res) => {
