@@ -61,6 +61,7 @@ app.get("/user/:id", async (req, res, next) => {
 
 // Error handling
 app.use((error, req, res, next) => {
+  console.log(error.message);
   res.status(res.statusCode || 500);
   res.json({
       message: error.message
