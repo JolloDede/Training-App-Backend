@@ -153,17 +153,26 @@ router.post("/muscles", (req, res, next) => {
 });
 
 router.delete("/muscles/:id", (req, res, next) => {
-    muscles.findOneAndDelete({
-        _id: req.params.id,
-    }).then((muscle) => {
-        console.log(muscle)
-        if (!muscle) {
-            const error = new Error("Can not delete a muscle that does not exist!");
-            res.status(404);
+    exercises.find({
+        "muscles.muscle._id": { $eq: monk.id(req.params.id) }
+    }).then(exercise => {
+        if (exercise) {
+            const error = new Error("Can not delete a muscle that exists in a exercise!");
+            res.status(403);
             next(error);
             return;
         }
-        res.send(muscle)
+        muscles.findOneAndDelete({
+            _id: req.params.id,
+        }).then((muscle) => {
+            if (!muscle) {
+                const error = new Error("Can not delete a muscle that does not exist!");
+                res.status(404);
+                next(error);
+                return;
+            }
+            res.send(muscle)
+        })
     })
 });
 

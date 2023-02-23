@@ -10,4 +10,5 @@
 * [X] exercise add
 
 #### Fix
-* [ ] cant delete muscle while it exists in exercise
+* [X] cant delete muscle while it exists in exercise
+* [ ] cant delete exercise while exists in user exercise
