@@ -2,7 +2,7 @@
   "name": "training-app-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "api/index.js",
   "scripts": {
     "start": "node api/server.js",
     "dev": "nodemon api/server.js",
