@@ -14,7 +14,7 @@ const users = db.get("users");
 const userExercises = db.get("userExercises");
 app.use(morgan('tiny'));
 
-const allowedOrigins = ['http://127.0.0.1:5173']; const options = { allowedOrigins };
+const allowedOrigins = ['http://127.0.0.1', "https://training-app-frontend.vercel.app"]; const options = { allowedOrigins };
 app.use(cors(options));
 app.use(express.json());
 app.use(middlewares.checkTokenSetUser);
