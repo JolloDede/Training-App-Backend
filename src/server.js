@@ -21,7 +21,7 @@ app.use(middlewares.checkTokenSetUser);
 
 app.use("/auth", auth);
 
-app.get('/', (req, res) => {
+app.get('/hallo', (req, res) => {
   res.send('Application works!');
 });
 
