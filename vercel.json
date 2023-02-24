@@ -8,5 +8,5 @@
     ],
     "rewrites": [{ 
         "source": "/(.*)", 
-        "destination": "/" }]
+        "destination": "/api" }]
 }
