@@ -166,7 +166,7 @@ router.delete("/muscles/:id", (req, res, next) => {
     exercises.find({
         "muscles.muscle._id": { $eq: monk.id(req.params.id) }
     }).then(exercise => {
-        if (exercise) {
+        if (exercise.length != 0) {
             const error = new Error("Can not delete a muscle that exists in a exercise!");
             res.status(403);
             next(error);
