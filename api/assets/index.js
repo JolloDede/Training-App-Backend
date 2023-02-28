@@ -33,8 +33,9 @@ async function exercisesExists(exerciseIds) {
 
 // User exercises
 router.get("/user/exercises", (req, res, next) => {
-    userExercises.find()
-        .then(fExercises => {
+    userExercises.find({
+        userId: monk.id(req.user._id),
+    }).then(fExercises => {
             res.send(fExercises);
         })
 });
