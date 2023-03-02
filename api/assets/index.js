@@ -122,7 +122,7 @@ router.delete("/exercises/:id", (req, res, next) => {
     userExercises.find({
         exerciseId: monk.id(req.params.id),
     }).then(userExercise => {
-        if (userExercise) {
+        if (userExercise.length != 0) {
             const error = new Error("Can not delete a exercise that exists in userexercise!");
             res.status(403);
             next(error);
