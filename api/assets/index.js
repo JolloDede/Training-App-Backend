@@ -5,7 +5,7 @@ const db = require("../db/connection");
 const middlewares = require("../auth/middleware");
 
 const router = express.Router();
-const userExercises = db.get("userExercises");
+const workouts = db.get("workouts");
 const exercises = db.get("exercises");
 const muscles = db.get("muscles");
 
@@ -31,44 +31,44 @@ async function exercisesExists(exerciseIds) {
     return true;
 }
 
-// User exercises
-router.get("/user/exercises", (req, res, next) => {
-    userExercises.find({
+// workouts
+router.get("/user/workouts", (req, res, next) => {
+    workouts.find({
         userId: monk.id(req.user._id),
-    }).then(fExercises => {
-            res.send(fExercises);
+    }).then(fWorkout => {
+            res.send(fWorkout);
         })
 });
 
-router.post("/user/exercises", (req, res, next) => {
-    if (!exercisesExists([req.body.params.exerciseId])) {
-        const error = new Error("An exercise does not exist");
-        res.status(404);
-        next(error);
-        return;
-    }
-    const newUserExercise = {
-        exerciseId: monk.id(req.body.params.exerciseId),
+router.post("/user/workouts", (req, res, next) => {
+    // if (!exercisesExists([req.body.params.exerciseId])) {
+    //     const error = new Error("An exercise does not exist");
+    //     res.status(404);
+    //     next(error);
+    //     return;
+    // }
+    const newWorkout = {
+        name: req.body.params.name,
         userId: monk.id(req.body.params.userId || req.user._id),
-        repetitions: req.body.params.repetitions,
+        exercises: req.body.params.exercises,
     };
-    userExercises.insert(newUserExercise)
+    workouts.insert(newWorkout)
         .then(insertedExercise => {
             res.send(insertedExercise);
         })
 });
 
-router.delete("/user/exercises/:id", (req, res, next) => {
-    userExercises.findOneAndDelete({
+router.delete("/user/workouts/:id", (req, res, next) => {
+    workouts.findOneAndDelete({
         _id: req.params.id,
-    }).then((exercise) => {
-        if (!exercise) {
+    }).then((workout) => {
+        if (!workout) {
             const error = new Error("Can not delete a exercise that does not exist!");
             res.status(404);
             next(error);
             return;
         }
-        res.send(exercise);
+        res.send(workout);
     })
 });
 
@@ -119,7 +119,7 @@ router.post("/exercises", (req, res, next) => {
 });
 
 router.delete("/exercises/:id", (req, res, next) => {
-    userExercises.find({
+    workouts.find({
         exerciseId: monk.id(req.params.id),
     }).then(userExercise => {
         if (userExercise.length != 0) {
