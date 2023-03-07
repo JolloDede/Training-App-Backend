@@ -11,7 +11,7 @@ const assets = require("./assets");
 
 const app = express();
 const users = db.get("users");
-const userExercises = db.get("userExercises");
+const workouts = db.get("workouts");
 app.use(morgan('tiny'));
 
 const allowedOrigins = ['http://127.0.0.1', "https://training-app-frontend.vercel.app"]; const options = { allowedOrigins };
@@ -51,14 +51,14 @@ app.get("/user/:id", async (req, res, next) => {
   }, "username").then(fUser => {
     return fUser;
   });
-  let exercises = await userExercises.find({
+  let workoutList = await workouts.find({
     userId: monk.id(req.params.id),
   }).then(fUserExer => {
     return fUserExer;
   })
   const response = {
     user: user,
-    exercises: exercises,
+    workouts: workoutList,
   };
   res.send(response);
 });

@@ -12,3 +12,8 @@
 #### Fix
 * [X] cant delete muscle while it exists in exercise
 * [X] cant delete exercise while exists in user exercise
+* [X] return workouts instead of userexercises
+
+### Step 9
+* [X] error handle
+  * [X] post workouts
