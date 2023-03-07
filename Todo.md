@@ -17,3 +17,6 @@
 ### Step 9
 * [X] error handle
   * [X] post workouts
+
+### Step 10
+* [X] on Signup dont just get Admin privilage
