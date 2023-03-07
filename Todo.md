@@ -15,5 +15,5 @@
 * [X] return workouts instead of userexercises
 
 ### Step 9
-* [ ] error handle
-  * [ ] post workouts
+* [X] error handle
+  * [X] post workouts

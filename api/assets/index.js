@@ -41,12 +41,12 @@ router.get("/user/workouts", (req, res, next) => {
 });
 
 router.post("/user/workouts", (req, res, next) => {
-    // if (!exercisesExists([req.body.params.exerciseId])) {
-    //     const error = new Error("An exercise does not exist");
-    //     res.status(404);
-    //     next(error);
-    //     return;
-    // }
+    if (!exercisesExists(req.body.params.exercises)) {
+        const error = new Error("An exercise does not exist");
+        res.status(404);
+        next(error);
+        return;
+    }
     const newWorkout = {
         name: req.body.params.name,
         userId: monk.id(req.body.params.userId || req.user._id),
