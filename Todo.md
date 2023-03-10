@@ -20,3 +20,4 @@
 
 ### Step 10
 * [X] on Signup dont just get Admin privilage
+* [X] update workouts

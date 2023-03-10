@@ -72,6 +72,21 @@ router.delete("/user/workouts/:id", (req, res, next) => {
     })
 });
 
+router.put("/user/workouts", (req, res, next) => {
+    workouts.findOneAndUpdate(
+        { _id: monk.id(req.body.params._id) }, 
+        { $set: req.body.params })
+    .then(insertedWorkout => {
+        if (!insertedWorkout) {
+            const error = new Error("Can not update a Workout that does not exist!");
+            res.status(404);
+            next(error);
+            return;
+        }
+        res.send(insertedWorkout);
+    })
+})
+
 // get not admin
 router.get("/exercises", (req, res, next) => {
     exercises.find()
