@@ -21,3 +21,7 @@
 ### Step 10
 * [X] on Signup dont just get Admin privilage
 * [X] update workouts
+
+### Step 12
+* [X] update exercise
+* [X] update muscles

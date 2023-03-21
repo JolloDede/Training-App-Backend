@@ -36,8 +36,8 @@ router.get("/user/workouts", (req, res, next) => {
     workouts.find({
         userId: monk.id(req.user._id),
     }).then(fWorkout => {
-            res.send(fWorkout);
-        })
+        res.send(fWorkout);
+    })
 });
 
 router.post("/user/workouts", (req, res, next) => {
@@ -73,18 +73,20 @@ router.delete("/user/workouts/:id", (req, res, next) => {
 });
 
 router.put("/user/workouts", (req, res, next) => {
+    // that mongodb recognices as objectid
+    req.body.params.userId ? req.body.params.userId = monk.id(req.body.params.userId) : req.body.params.userId = req.user._id;
     workouts.findOneAndUpdate(
-        { _id: monk.id(req.body.params._id) }, 
+        { _id: monk.id(req.body.params._id) },
         { $set: req.body.params })
-    .then(insertedWorkout => {
-        if (!insertedWorkout) {
-            const error = new Error("Can not update a Workout that does not exist!");
-            res.status(404);
-            next(error);
-            return;
-        }
-        res.send(insertedWorkout);
-    })
+        .then(insertedWorkout => {
+            if (!insertedWorkout) {
+                const error = new Error("Can not update a Workout that does not exist!");
+                res.status(404);
+                next(error);
+                return;
+            }
+            res.send(insertedWorkout);
+        })
 })
 
 // get not admin
@@ -157,6 +159,21 @@ router.delete("/exercises/:id", (req, res, next) => {
     })
 });
 
+router.put("/exercises", (req, res, next) => {
+    exercises.findOneAndUpdate(
+        { _id: monk.id(req.body.params._id) },
+        { $set: req.body.params })
+        .then(insertedExercise => {
+            if (!insertedExercise) {
+                const error = new Error("Can not update a Exercise that does not exist!");
+                res.status(404);
+                next(error);
+                return;
+            }
+            res.send(insertedExercise);
+        })
+})
+
 // Muscles
 router.post("/muscles", (req, res, next) => {
     muscles.findOne({
@@ -201,5 +218,20 @@ router.delete("/muscles/:id", (req, res, next) => {
         })
     })
 });
+
+router.put("/muscles", (req, res, next) => {
+    muscles.findOneAndUpdate(
+        { _id: req.body.params._id },
+        { $set: req.body.params })
+        .then(insertedMuscle => {
+            if (!insertedMuscle) {
+                const error = new Error("Can not update a Workout that does not exist!");
+                res.status(404);
+                next(error);
+                return;
+            }
+            res.send(insertedMuscle);
+        })
+})
 
 module.exports = router;
