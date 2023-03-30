@@ -64,7 +64,7 @@ router.post("/signup", (req, res, next) => {
             bcrypt.hash(req.body.params.password.trim(), 12).then(hashedPassword => {
                 const newUser = {
                     username: username,
-                    group: 0,
+                    group: 1,
                     password: hashedPassword,
                     team: [0],
                 };

@@ -17,3 +17,15 @@
 ### Step 9
 * [X] error handle
   * [X] post workouts
+
+### Step 10
+* [X] on Signup dont just get Admin privilage
+* [X] update workouts
+
+### Step 12
+* [X] update exercise
+* [X] update muscles
+
+#### Fix
+* [X] delete muscle
+* [X] delete exercise
