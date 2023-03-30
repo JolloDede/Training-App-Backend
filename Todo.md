@@ -25,3 +25,7 @@
 ### Step 12
 * [X] update exercise
 * [X] update muscles
+
+#### Fix
+* [X] delete muscle
+* [X] delete exercise
